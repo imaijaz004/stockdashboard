@@ -13,6 +13,12 @@ def login(email, password):
         user_email = user["email"]
         st.session_state["user"] = user_email
         st.session_state["messages"] = []  #deletes any previous prompts
+        st.session_state.pop("chart_image", None)
+        st.session_state.pop("stock_fig", None)
+        st.session_state.pop("stock_data", None)
+        st.session_state.pop("prediction", None)
+        st.session_state.pop("metrics", None)
+
         st.query_params.update({"user": user_email})  # NEW SYNTAX
         return True
     except:
@@ -25,16 +31,30 @@ def signup(email, password):
         user_email = user["email"]
         st.session_state["user"] = user_email
         st.session_state["messages"] = []  #deletes any previous prompts by the previous user logged or signed in
+        st.session_state.pop("chart_image", None)
+        st.session_state.pop("stock_fig", None)
+        st.session_state.pop("stock_data", None)
+        st.session_state.pop("prediction", None)
+        st.session_state.pop("metrics", None)
+
         st.query_params.update({"user": user_email})  # NEW SYNTAX
         return True
     except Exception as e:
         st.error(f"Signup error: {extract_error_message(e)}")
         return False
 
-def logout():
-    st.session_state.pop("user", None)  # Clear user
-    st.session_state["logout_triggered"] = True
+# def logout():
+#     st.session_state.pop("user", None)  # Clear user
+#     st.session_state["logout_triggered"] = True
 
+def logout():
+    st.session_state.pop("user", None)
+    st.session_state.pop("chart_image", None)  # ✅ clear chart image
+    st.session_state.pop("stock_fig", None)
+    st.session_state.pop("stock_data", None)
+    st.session_state.pop("prediction", None)
+    st.session_state.pop("metrics", None)
+    st.session_state["logout_triggered"] = True
 
 def extract_error_message(e):
     try:
