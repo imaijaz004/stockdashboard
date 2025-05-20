@@ -1,12 +1,13 @@
 import streamlit as st
 from openai import OpenAI
 
-
 def ai_chatbot():
     st.header("💬 AI Stock Analyst Chatbot")
+
+    # ✅ Use Streamlit secrets for the API key
     client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="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",
+        api_key=st.secrets["openai"]["api_key"],
     )
 
     if "messages" not in st.session_state:
@@ -33,4 +34,3 @@ def ai_chatbot():
             )
         except Exception as e:
             st.error(f"❌ Failed to get response: {e}")
-
