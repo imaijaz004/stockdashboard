@@ -137,22 +137,18 @@ else:
                 "1y": "1wk",
                 "max": "1wk",
             }
-
             data = fetch_stock_data(ticker, time_period, interval_mapping[time_period])
             data = process_data(data)
             data = add_technical_indicators(data)
+
             last_close, change, pct_change, high, low, volume = calculate_metrics(data)
+            st.markdown("---")
+            st.metric(
+                label=f'"{ticker}" Last Price',
+                value=f"{last_close:.2f} USD",
+                delta=f"{change:.2f} ({pct_change:.2f}%)",
+            )
 
-            # Save in session state to persist after rerun
-            st.session_state["stock_data"] = data
-            st.session_state["ticker"] = ticker
-            st.session_state["time_period"] = time_period
-            st.session_state["chart_type"] = chart_type
-            st.session_state["indicators"] = indicators
-            st.session_state["metrics"] = (last_close, change, pct_change)
-            st.session_state["prediction"] = generate_7_day_prediction(data)
-
-            # Generate figure
             fig = go.Figure()
             if chart_type == "Candlestick":
                 fig.add_trace(
@@ -165,150 +161,60 @@ else:
                     )
                 )
             else:
-                fig.add_trace(go.Scatter(x=data["Datetime"], y=data["Close"], mode="lines"))
+                fig.add_trace(
+                    go.Scatter(x=data["Datetime"], y=data["Close"], mode="lines")
+                )
 
+            # Adding technical indicators to the plot
             for indicator in indicators:
                 if indicator == "SMA 20":
-                    fig.add_trace(go.Scatter(x=data["Datetime"], y=data["SMA_20"], name="SMA 20", line=dict(color="blue")))
+                    fig.add_trace(
+                        go.Scatter(
+                            x=data["Datetime"],
+                            y=data["SMA_20"],
+                            name="SMA 20",
+                            line=dict(color="blue"),
+                        )
+                    )
                 elif indicator == "EMA 20":
-                    fig.add_trace(go.Scatter(x=data["Datetime"], y=data["EMA_20"], name="EMA 20"))
+                    fig.add_trace(
+                        go.Scatter(x=data["Datetime"], y=data["EMA_20"], name="EMA 20")
+                    )
                 elif indicator == "Bollinger Bands":
-                    fig.add_trace(go.Scatter(x=data["Datetime"], y=data["BB_upper"], name="Upper BB", line=dict(color="red")))
-                    fig.add_trace(go.Scatter(x=data["Datetime"], y=data["BB_middle"], name="Middle BB", line=dict(color="orange")))
-                    fig.add_trace(go.Scatter(x=data["Datetime"], y=data["BB_lower"], name="Lower BB", line=dict(color="green"), fill="tonexty"))
+                    fig.add_trace(
+                        go.Scatter(
+                            x=data["Datetime"],
+                            y=data["BB_upper"],
+                            fill=None,
+                            mode="lines",
+                            name="Upper Bollinger Band",
+                            line=dict(color="red"),
+                        )
+                    )
+                    fig.add_trace(
+                        go.Scatter(
+                            x=data["Datetime"],
+                            y=data["BB_middle"],
+                            fill=None,
+                            mode="lines",
+                            name="Middle Bollinger Band",
+                            line=dict(color="orange"),
+                        )
+                    )
+                    fig.add_trace(
+                        go.Scatter(
+                            x=data["Datetime"],
+                            y=data["BB_lower"],
+                            fill="tonexty",
+                            mode="lines",
+                            name="Lower Bollinger Band",
+                            line=dict(color="green"),
+                        )
+                    )
                 elif indicator == "VWAP":
-                    fig.add_trace(go.Scatter(x=data["Datetime"], y=data["VWAP"], name="VWAP"))
-
-            fig.update_layout(title=f"{ticker} {time_period.upper()} Chart", height=800)
- 
-            import io
-            # Save chart image to session for analysis
-            buf = io.BytesIO()
-            fig.write_image(buf, format="png")
-            buf.seek(0)
-            st.session_state["chart_image"] = buf
-            st.session_state["stock_fig"] = fig
-
-
-        # if update:
-        #     interval_mapping = {
-        #         "1d": "1m",
-        #         "1wk": "30m",
-        #         "1mo": "1d",
-        #         "1y": "1wk",
-        #         "max": "1wk",
-        #     }
-        #     data = fetch_stock_data(ticker, time_period, interval_mapping[time_period])
-        #     data = process_data(data)
-        #     data = add_technical_indicators(data)
-
-        #     last_close, change, pct_change, high, low, volume = calculate_metrics(data)
-        #     st.markdown("---")
-        #     st.metric(
-        #         label=f'"{ticker}" Last Price',
-        #         value=f"{last_close:.2f} USD",
-        #         delta=f"{change:.2f} ({pct_change:.2f}%)",
-        #     )
-
-        #     fig = go.Figure()
-        #     if chart_type == "Candlestick":
-        #         fig.add_trace(
-        #             go.Candlestick(
-        #                 x=data["Datetime"],
-        #                 open=data["Open"],
-        #                 high=data["High"],
-        #                 low=data["Low"],
-        #                 close=data["Close"],
-        #             )
-        #         )
-        #     else:
-        #         fig.add_trace(
-        #             go.Scatter(x=data["Datetime"], y=data["Close"], mode="lines")
-        #         )
-
-        #     # Adding technical indicators to the plot
-        #     for indicator in indicators:
-        #         if indicator == "SMA 20":
-        #             fig.add_trace(
-        #                 go.Scatter(
-        #                     x=data["Datetime"],
-        #                     y=data["SMA_20"],
-        #                     name="SMA 20",
-        #                     line=dict(color="blue"),
-        #                 )
-        #             )
-        #         elif indicator == "EMA 20":
-        #             fig.add_trace(
-        #                 go.Scatter(x=data["Datetime"], y=data["EMA_20"], name="EMA 20")
-        #             )
-        #         elif indicator == "Bollinger Bands":
-        #             fig.add_trace(
-        #                 go.Scatter(
-        #                     x=data["Datetime"],
-        #                     y=data["BB_upper"],
-        #                     fill=None,
-        #                     mode="lines",
-        #                     name="Upper Bollinger Band",
-        #                     line=dict(color="red"),
-        #                 )
-        #             )
-        #             fig.add_trace(
-        #                 go.Scatter(
-        #                     x=data["Datetime"],
-        #                     y=data["BB_middle"],
-        #                     fill=None,
-        #                     mode="lines",
-        #                     name="Middle Bollinger Band",
-        #                     line=dict(color="orange"),
-        #                 )
-        #             )
-        #             fig.add_trace(
-        #                 go.Scatter(
-        #                     x=data["Datetime"],
-        #                     y=data["BB_lower"],
-        #                     fill="tonexty",
-        #                     mode="lines",
-        #                     name="Lower Bollinger Band",
-        #                     line=dict(color="green"),
-        #                 )
-        #             )
-        #         elif indicator == "VWAP":
-        #             fig.add_trace(
-        #                 go.Scatter(x=data["Datetime"], y=data["VWAP"], name="VWAP")
-        #             )
-            # Display chart from session state
-        if "stock_fig" in st.session_state:
-            last_close, change, pct_change = st.session_state["metrics"]
-            st.metric(
-                label=f"{st.session_state['ticker']} Last Price",
-                value=f"{last_close:.2f} USD",
-                delta=f"{change:.2f} ({pct_change:.2f}%)",
-            )
-            st.plotly_chart(st.session_state["stock_fig"], use_container_width=True)
-
-        # Display table from session state
-        if "stock_data" in st.session_state:
-            st.subheader("Historical Data")
-            st.dataframe(st.session_state["stock_data"][["Datetime", "Open", "High", "Low", "Close", "Volume"]])
-
-        # Display prediction graph from session state
-        if "prediction" in st.session_state and not st.session_state["prediction"].empty:
-            st.markdown("### 7-Day Price Prediction")
-            pred_df = st.session_state["prediction"]
-            fig = go.Figure()
-            fig.add_trace(
-                go.Scatter(
-                    x=pred_df["Datetime"],
-                    y=pred_df["Predicted"],
-                    mode="lines+markers",
-                )
-            )
-            fig.update_layout(
-                template="plotly_dark",
-                xaxis_title="Date",
-                yaxis_title="Predicted Close Price (USD)",
-            )
-            st.plotly_chart(fig, use_container_width=True)
+                    fig.add_trace(
+                        go.Scatter(x=data["Datetime"], y=data["VWAP"], name="VWAP")
+                    )
 
             fig.update_layout(
                 title=f'"{ticker}" {time_period.upper()} Chart', height=750
