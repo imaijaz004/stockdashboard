@@ -12,6 +12,7 @@ def login(email, password):
         user = auth.sign_in_with_email_and_password(email, password)
         user_email = user["email"]
         st.session_state["user"] = user_email
+        st.session_state["messages"] = []  #deletes any previous prompts
         st.query_params.update({"user": user_email})  # NEW SYNTAX
         return True
     except:
@@ -23,6 +24,7 @@ def signup(email, password):
         user = auth.create_user_with_email_and_password(email, password)
         user_email = user["email"]
         st.session_state["user"] = user_email
+        st.session_state["messages"] = []  #deletes any previous prompts by the previous user logged or signed in
         st.query_params.update({"user": user_email})  # NEW SYNTAX
         return True
     except Exception as e:
