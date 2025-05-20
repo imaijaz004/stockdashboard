@@ -1,0 +1,40 @@
+streamlit
+plotly
+yfinance
+pyrebase4
+PIL
+pandas
+sklearn
+ta
+openai -> (a working api key)
+base64(no need to install its already inbuilt)
+pathlib(no need to install its already inbuilt)
+io(no need to install its already inbuilt)
+datetime(no need to install its already inbuilt)
+
+
+#here are the steps to create a project in firebase and importing the requirements for the working of login page
+✅ 1. Create a Firebase Project
+Go to Firebase Console
+Click "Add project"
+Enter a project name 
+Click "Continue" → Disable Google Analytics (optional) → Click "Create project"
+Wait for Firebase to finish setting it up.
+
+✅ 2. Enable Authentication
+In the Firebase dashboard, go to the left menu → "Build" > "Authentication"
+Click "Get started"
+Under Sign-in providers, click "Email/Password" (you can add more options if needed)
+Enable it and click "Save"
+
+✅ 3. Create a Web App (Optional but Recommended)
+In the Firebase project homepage, click "Settings (⚙️)" > Project settings
+Scroll down to "Your apps" → Click </> (Web App)
+Register app name → Click "Register app"
+You can skip the SDK setup unless you use Firebase JS SDK (not needed for Python).
+
+✅ 4. Get Firebase Admin SDK Credentials
+In Firebase, go to Settings (⚙️) > Project Settings
+Click the "Service accounts" tab
+Click "Generate new private key"
+Download the JSON file (e.g., firebase_key.json)
