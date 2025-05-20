@@ -2,12 +2,8 @@ streamlit
 plotly
 yfinance
 pyrebase4
-PIL
+Pillow
 pandas
-sklearn
+scikit-learn
 ta
 openai
-base64
-pathlib
-io
-datetime
