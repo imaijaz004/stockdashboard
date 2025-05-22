@@ -221,6 +221,12 @@ else:
             )
             st.plotly_chart(fig, use_container_width=True)
 
+            #download chart
+            buf = io.BytesIO()
+            fig.write_image(buf, format="png")
+            buf.seek(0)
+            st.session_state["chart_image"] = buf
+            
             # historical table
             st.markdown("---")
             st.subheader("Historical Data")
