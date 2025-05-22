@@ -1,5 +1,6 @@
 import streamlit as st
 from openai import OpenAI
+import base64
 
 def ai_chatbot():
     st.header("💬 AI Stock Analyst Chatbot")
@@ -43,6 +44,7 @@ def ai_chatbot():
         else:
             try:
                 image_bytes = st.session_state["chart_image"].getvalue()
+                image_base64 = base64.b64encode(image_bytes).decode("utf-8")
 
                 response = client.chat.completions.create(
                     model="shisa-ai/shisa-v2-llama3.3-70b:free",
@@ -50,14 +52,8 @@ def ai_chatbot():
                         {
                             "role": "user",
                             "content": [
-                                {
-                                    "type": "text",
-                                    "text": "You are a professional stock analyst. Thoroughly analyze the stock chart image and give insights such as trend, patterns, support/resistance levels, and predictions.",
-                                },
-                                {
-                                    "type": "image",
-                                    "image": image_bytes,
-                                },
+                                {"type": "text", "text": "You are a professional stock analyst. Analyze this stock chart and explain the trend, patterns, and recommendation."},
+                                {"type": "image", "image": image_base64},
                             ],
                         }
                     ],
