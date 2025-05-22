@@ -142,6 +142,12 @@ else:
             data = add_technical_indicators(data)
 
             last_close, change, pct_change, high, low, volume = calculate_metrics(data)
+            
+            #metric into buffer
+            st.session_state["selected_ticker"] = ticker
+            st.session_state["selected_timeframe"] = time_period
+            st.session_state["last_price"] = f"${last_close:.2f}"
+
             st.markdown("---")
             st.metric(
                 label=f'"{ticker}" Last Price',

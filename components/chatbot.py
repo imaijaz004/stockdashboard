@@ -46,26 +46,49 @@ def ai_chatbot():
                 image_bytes = st.session_state["chart_image"].getvalue()
                 image_base64 = base64.b64encode(image_bytes).decode("utf-8")
 
+                ticker = st.session_state.get("selected_ticker", "[Symbol]")
+                timeframe = st.session_state.get("selected_timeframe", "1-month")
+                price = st.session_state.get("last_price", "[Current Price]")
+
+                prompt = f"""
+You are a Stock Trader specializing in Technical Analysis at a top financial institution.
+
+Perform a detailed analysis of the attached stock chart image for the company with ticker symbol {ticker}.
+The chart represents approximately a {timeframe} period, and the stock is currently trading around {price}.
+
+**Please generate output in the following structure:**
+
+1. Chart Overview: Trend, volume, support/resistance levels.
+2. Technical Trends: Indicators like SMA/EMA, MACD, RSI, patterns.
+3. Recommendation: Buy / Hold / Sell, and why.
+4. Notes: Any warning signs or unique insights.
+"""
+
                 response = client.chat.completions.create(
                     model="shisa-ai/shisa-v2-llama3.3-70b:free",
                     messages=[
                         {
                             "role": "user",
                             "content": [
-                                {"type": "text", "text": "You are a professional stock analyst. Analyze this stock chart and explain the trend, patterns, and recommendation."},
+                                {"type": "text", "text": prompt},
                                 {"type": "image", "image": image_base64},
                             ],
                         }
                     ],
                 )
-                analysis_reply = response.choices[0].message.content
-                st.chat_message("assistant").markdown(analysis_reply)
+
+                reply = response.choices[0].message.content
+                st.chat_message("assistant").markdown(reply)
                 st.session_state.messages.append(
-                    {"role": "assistant", "content": analysis_reply}
+                    {"role": "assistant", "content": reply}
                 )
+
             except Exception as e:
                 st.error(f"❌ Failed to analyze image: {e}")
 
+
+
+#original code
 # import streamlit as st
 # from openai import OpenAI
 

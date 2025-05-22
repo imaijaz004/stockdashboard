@@ -12,6 +12,11 @@ def clear_chart_state():
     ]
     for key in keys_to_clear:
         st.session_state.pop(key, None)
+    st.session_state.pop("chart_image", None)
+    st.session_state.pop("selected_ticker", None)
+    st.session_state.pop("selected_timeframe", None)
+    st.session_state.pop("last_price", None)
+
 
 def login(email, password):
     try:
