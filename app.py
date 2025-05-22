@@ -203,7 +203,7 @@ else:
                             y=data["BB_middle"],
                             fill=None,
                             mode="lines",
-                            name="Middle Bollinger Band",
+                            name="Middle Bollinger Band(\"SMA_20\")",
                             line=dict(color="orange"),
                         )
                     )
