@@ -17,9 +17,24 @@ def generate_7_day_prediction(data):
     X = df[[f"y_shift{i}" for i in range(1, 8)]]
     y = df["y"]
 
-    model = LinearRegression()
-    model.fit(X, y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
+    # Train the linear regression model
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    # Predict on test set and evaluate
+    y_pred = model.predict(X_test)
+    mse = mean_squared_error(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+    mean_actual = y_test.mean()
+    accuracy = 100 - (mae / mean_actual * 100)
+    # Print evaluation metrics to terminal (or log if needed)
+    print(f" Prediction Evaluation:")
+    print(f" - Mean Squared Error (MSE): {mse:.2f}")
+    print(f" - Mean Absolute Error (MAE): {mae:.2f}")
+    print(f" - Percentage Accuracy: {accuracy:.2f}%")
+    # Generate prediction for next 7 days
     last_values = list(
         df.iloc[-1][
             [

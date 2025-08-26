@@ -21,15 +21,10 @@ if st.session_state.get("logout_triggered"):
     login_page()  # Renders login page immediately after logout
     st.stop()
 
-#  Restore user from query params (optional)
+#  Restore user from query params 
 query_params = st.query_params
 if "user" in query_params and "user" not in st.session_state:
     st.session_state["user"] = query_params["user"][0]
-
-#  Not logged in? Show login page
-if "user" not in st.session_state:
-    login_page()
-    st.stop()
 
 # Check if user is logged in
 if "user" not in st.session_state:
@@ -228,11 +223,20 @@ else:
             st.plotly_chart(fig, use_container_width=True)
 
             #download chart
-            buf = io.BytesIO()
-            fig.write_image(buf, format="png")
-            buf.seek(0)
-            st.session_state["chart_image"] = buf
+            # buf = io.BytesIO()
+            # fig.write_image(buf, format="png")
+            # buf.seek(0)
+            # st.session_state["chart_image"] = buf
             
+            buf = io.BytesIO()
+            fig.write_html(buf,include_plotlyjs='cdn')
+            html_bytes=buf.getvalue()
+            st.download_button(
+                label="📊 Download Chart",
+                data=html_bytes,
+                file_name="chart.html",
+                mime="text/html"
+            )
             # historical table
             st.markdown("---")
             st.subheader("Historical Data")
