@@ -228,9 +228,9 @@ else:
             # buf.seek(0)
             # st.session_state["chart_image"] = buf
             
-            buf = io.BytesIO()
+            buf = io.StringIO()
             fig.write_html(buf,include_plotlyjs='cdn')
-            html_bytes=buf.getvalue()
+            html_bytes=buf.getvalue().encode("utf-8")
             st.download_button(
                 label="📊 Download Chart",
                 data=html_bytes,
