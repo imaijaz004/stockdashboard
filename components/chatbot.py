@@ -45,8 +45,8 @@ def ai_chatbot():
             st.warning("⚠️ Please generate stock data first, then I can analyze it for you.")
         else:
             try:
-                # ✅ Use the last 20 rows of chart_data instead of image
-                data_tail = st.session_state["chart_data"].tail(20).to_string(index=False)
+
+                data_tail = st.session_state["chart_image"].tail(20).to_string(index=False)
 
                 ticker = st.session_state.get("selected_ticker", "[Symbol]")
                 timeframe = st.session_state.get("selected_timeframe", "1-month")
