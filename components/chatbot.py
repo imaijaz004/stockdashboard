@@ -41,8 +41,8 @@ def ai_chatbot():
 
     # ------------------ Chart Analysis ------------------
     if run_analysis:
-        if "chart_data" not in st.session_state or st.session_state["chart_data"] is None:
-            st.warning("⚠️ Please generate stock data first.")
+        if "chart_image" not in st.session_state or st.session_state["chart_image"] is None:
+            st.warning("⚠️ Please generate stock data first, then I can analyze it for you.")
         else:
             try:
                 # ✅ Use the last 20 rows of chart_data instead of image

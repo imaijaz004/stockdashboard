@@ -231,6 +231,9 @@ else:
             buf = io.StringIO()
             fig.write_html(buf,include_plotlyjs='cdn')
             html_bytes=buf.getvalue().encode("utf-8")
+            
+            #saving into
+            st.session_state["chart_image"] = buf
             st.download_button(
                 label="📊 Download Chart",
                 data=html_bytes,
