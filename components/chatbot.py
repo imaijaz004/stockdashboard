@@ -46,7 +46,7 @@ def ai_chatbot():
         else:
             try:
                 # Decode chart bytes to text excerpt instead of using .tail()
-                chart_excerpt = st.session_state["chart_image"].decode("utf-8")[:2000]
+                chart_excerpt = st.session_state["chart_image"].getvalue()[:2000]
 
                 ticker = st.session_state.get("selected_ticker", "[Symbol]")
                 timeframe = st.session_state.get("selected_timeframe", "1-month")
