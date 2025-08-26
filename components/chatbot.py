@@ -45,8 +45,8 @@ def ai_chatbot():
             st.warning("⚠️ Please generate stock data first, then I can analyze it for you.")
         else:
             try:
-
-                data_tail = st.session_state["chart_image"].tail(20).to_string(index=False)
+                # Decode chart bytes to text excerpt instead of using .tail()
+                chart_excerpt = st.session_state["chart_image"].decode("utf-8")[:2000]
 
                 ticker = st.session_state.get("selected_ticker", "[Symbol]")
                 timeframe = st.session_state.get("selected_timeframe", "1-month")
@@ -55,11 +55,11 @@ def ai_chatbot():
                 prompt = f"""
 You are a Stock Trader specializing in Technical Analysis at a top financial institution.
 
-Perform a detailed analysis of the following stock data for the company with ticker symbol {ticker}.
+Perform a detailed analysis of the following stock chart for the company with ticker symbol {ticker}.
 The chart represents approximately a {timeframe} period, and the stock is currently trading around {price}.
 
-Here is the most recent stock data:
-{data_tail}
+Here is the chart data (HTML excerpt):
+{chart_excerpt}
 
 **Please generate output in the following structure:**
 
@@ -84,6 +84,7 @@ Here is the most recent stock data:
 
             except Exception as e:
                 st.error(f"❌ Failed to analyze chart data: {e}")
+
 
 
 
