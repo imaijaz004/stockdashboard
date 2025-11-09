@@ -70,7 +70,7 @@ Here is the chart data (HTML excerpt):
 """
 
                 response = client.chat.completions.create(
-                    model="shisa-ai/shisa-v2-llama3.3-70b:free",
+                    model="meta-llama/llama-3.3-70b-instruct:free",
                     messages=[
                         {"role": "user", "content": prompt}
                     ],
